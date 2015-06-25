@@ -4,13 +4,13 @@ var deepPopulate = require('mongoose-deep-populate');
 
 
 var date = new Date();
-var datePost = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear().toString().substr(2,2);
+var dateMessage = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear().toString().substr(2,2);
 
 mongoose.set('debug', true);
 
 var messageSchema = new mongoose.Schema ({
   body: {type: String, required: true},
-  date: {type: String, default: datemessage},
+  date: {type: String, default: dateMessage},
   tags: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "Tag"

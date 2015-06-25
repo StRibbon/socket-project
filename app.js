@@ -70,9 +70,21 @@ app.get("/logout", function (req, res) {
   res.redirect("/");
 });
 
-//INDEX SinglePageApp
-app.get('/home', function(req,res){
-  res.render('layout');
+app.get('/home', function(req,res) {
+  db.Message.find({}).populate('user','username').exec(function(err, messages) {
+    if (err) {
+      console.log(err);
+    } else {
+      if(req.session.id == null){
+        res.render('layout', {messages: messages, currentuser: "*FALSE USER*"});
+      } else {
+        db.User.findById(req.session.id, function(err,user){
+          console.log(user)
+          res.render('layout', {messages: messages, currentuser: user.username});
+        })
+      }
+    }
+  });
 });
 
 io.on('connection', function(socket){
