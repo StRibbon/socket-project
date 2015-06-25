@@ -1,9 +1,9 @@
 var express = require('express'),
     app = express(),
 	  http = require('http').Server(app),
-	  io = require('socket.io')(http),
+    bodyParser = require('body-parser'),
     db = require("./models"),
-    bodyParser = require('body-parser'),   
+	  io = require('socket.io')(http),      
     methodOverride = require("method-override"),
     session = require("cookie-session"),
     morgan = require("morgan"),
@@ -70,6 +70,7 @@ app.get("/logout", function (req, res) {
   res.redirect("/");
 });
 
+//INDEX SinglePageApp
 app.get('/home', function(req,res){
   res.render('layout');
 });
