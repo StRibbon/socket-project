@@ -1,0 +1,21 @@
+<% include ../partials/header %>
+
+
+
+<form method="POST" action="/login">
+  
+  <div class="form-group"> 
+    <h2>Log-in</h2>
+    <label for="user">Username:</label>
+      <input type="text" name="user[username]" id="user" placeholder="Create a username" autofocus class="form-control">
+    </label>
+    <label>Password:
+      <input type="password" id="pass" name="user[password]" placeholder="Create a password" class="form-control">
+    </label>
+    <input type="submit" class="btn btn-primary" value="submit">
+  </div>   
+  
+</form>
+
+<% include ../partials/header %>
+

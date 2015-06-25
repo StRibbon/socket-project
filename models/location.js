@@ -1,4 +1,5 @@
 var mongoose = require('mongoose');
+var Tag = require('./tag');
 var Message = require('./message');
 var deepPopulate = require('mongoose-deep-populate');
 
@@ -9,18 +10,14 @@ var locationSchema = new mongoose.Schema ({
   topic: String,
   lat: Number,
   long: Number
-  tags: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Tag"
-  }],
-  user: {
-  	type: mongoose.Schema.Types.ObjectId,
-  	ref: "User"
-  },
-  locations: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Location"
-  }]
+  // tags: [{
+  //     type: mongoose.Schema.Types.ObjectId,
+  //     ref: "Tag"
+  // }],
+  // users: {
+  // 	type: mongoose.Schema.Types.ObjectId,
+  // 	ref: "User"
+  // },
 });
 
 locationSchema.plugin(deepPopulate);

@@ -1,0 +1,21 @@
+<% include ../partials/header %>
+
+<form method="POST" action="/login">
+  <div class="form-group"> 
+    <h2>Log-in</h2>
+    <label for="username">Username:</label>
+          <input type="text" name="user[username]" id="username" placeholder="Enter username" autofocus class="form-control">
+    </label>
+    <label>Password:
+      <input type="password" id="password" name="user[password]" placeholder="Input your password" class="form-control">
+    </label>
+    <input type="submit" class="btn btn-primary" value="submit">
+  </div>   
+  
+  <div>
+    <a href="/signup">Don't have an account? Register here</a>
+  </div>
+  
+</form>
+
+<% include ../partials/header %>
