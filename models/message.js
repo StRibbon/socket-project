@@ -1,16 +1,14 @@
 var mongoose = require('mongoose');
-var Comment = require('./location');
 var deepPopulate = require('mongoose-deep-populate');
 
-
-var date = new Date();
-var dateMessage = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear().toString().substr(2,2);
+// var date = new Date();
+// var dateMessage = (date.getMonth() + 1) + "/" + date.getDate() + "/" + date.getFullYear().toString().substr(2,2);
 
 mongoose.set('debug', true);
 
 var messageSchema = new mongoose.Schema ({
   body: {type: String, required: true},
-  date: {type: String, default: dateMessage},
+  date: {type: Date, default: Date.now},
   tags: [{
       type: mongoose.Schema.Types.ObjectId,
       ref: "Tag"

@@ -3,15 +3,16 @@
 <div class="btn btn-default">
           <a href="/logout">logout: <%= currentuser %></a>
         </div>
-        
+
 <div id="map-canvas"></div>
 
 <!-- <div id="date">Date: </div> -->
 
 <ul id="messages"></ul>
 
-<form action="">
-  <input id="m" autocomplete="off" /><button>Send</button>
+<form>
+  <input type="hidden" name="user[username]" id="user" value="<%= currentuser %>">
+  <input id="message" name="message[body]" autocomplete="off" /><button>Send</button>
 </form>
 
 <% include partials/footer %>

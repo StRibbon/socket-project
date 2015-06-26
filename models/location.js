@@ -9,15 +9,11 @@ mongoose.set('debug', true);
 var locationSchema = new mongoose.Schema ({
   topic: String,
   lat: Number,
-  long: Number
-  // tags: [{
-  //     type: mongoose.Schema.Types.ObjectId,
-  //     ref: "Tag"
-  // }],
-  // users: {
-  // 	type: mongoose.Schema.Types.ObjectId,
-  // 	ref: "User"
-  // },
+  long: Number,
+  messages: [{
+    type: mongoose.Schema.Types.ObjectId,
+    ref: "Message"
+  }],
 });
 
 locationSchema.plugin(deepPopulate);

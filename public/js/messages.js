@@ -1,39 +1,40 @@
 $(document).ready(function(){
 
-//   var url = window.location.pathname + "comments";
-
-//   function loadComments() {
-//     $.getJSON(url).done(function(data) {
+//   function loadMessages() {
+//     $.getJSON("/home").done(function(data) {
 //       console.log("TEST");
-//         var comments = data.post.comments;
-//         comments.forEach(function(comment){
-//           $("#comments").append("<h4 class='ui'><li>'"+ comment.body +"'</li>- "+ comment.user.username +"</h4>") 
+//         var messages = data.location.messages;
+//         messages.forEach(function(message){
+//               $('#messages').append($('<li>').text(message.user.username + message));
 //         })
 //     });
 //   }
-//   loadComments();
-
+//   loadMessages();
 // });
-
+  
 var socket = io();
+
+  
   $('form').submit(function(){
-    socket.emit('chat message', $('#m').val());
-    $('#m').val('');
+    socket.emit('message', $('#message').val());
+    $('#message').val('');
+    socket.emit('user', $('#user').val()); 
     return false;
   });
-  socket.on('chat message', function(msg,data){
+
+  socket.on('user', function(user){
+    console.log("*User: " + user);
+    $('#messages').append($('<li>').text(user));
+  });
+
+  socket.on('message', function(msg){
+    console.log("*Message: " + msg)
     $('#messages').append($('<li>').text(msg));
   });
 
-  // var socket = io.connect();
-  // socket.on('date', function(data){
-  //   $('#date').text(data.date);
-  // });
 
-  // $(document).ready(function(){
-  //   $('#text').keypress(function(e){
-  //     socket.emit('client_data', {'letter': String.fromCharCode(e.charCode)});
-  //   });
-  // });
 
 });
+
+
+
