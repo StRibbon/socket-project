@@ -1,19 +1,31 @@
 <% include partials/headerlayout %>
 
-<div class="btn btn-default">
-          <a href="/logout">logout: <%= currentuser %></a>
-        </div>
-
-<div id="map-canvas"></div>
-
-<!-- <div id="date">Date: </div> -->
-
-<ul id="messages"></ul>
-
-<form>
-  <input type="hidden" name="user[username]" id="user" value="<%= currentuser %>">
-  <input id="message" name="message[body]" autocomplete="off" /><button>Send</button>
+<form id="login" method="POST" action="javascript:void(0)">
+  <div class="form-group"> 
+    <h2>Log-in</h2>
+    <label for="username">Username:</label>
+          <input type="text" id="username" placeholder="Enter username" autofocus class="form-control">
+    </label>
+    <label>Password:
+      <input type="password" id="password" placeholder="Input your password" class="form-control">
+    </label>
+    <input type="submit" class="btn btn-primary" value="submit">
+  </div>   
+  
+  <div>
+    <a href="/signup">Don't have an account? Register here</a>
+  </div>
+  
 </form>
 
-<% include partials/footer %>
+<div id="map-canvas" style="display:none"></div>
 
+<form id="message" action="javascript:void(0)" style="display:none">
+      <label for="message">Message: </label>
+      <input type="text" name="message" id="text">
+      <input type="submit" value="SEND MESSAGE">
+</form>
+
+<div id="messages" class="display:none"></div>
+
+<% include partials/footer %>
