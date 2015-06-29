@@ -9,18 +9,10 @@ mongoose.set('debug', true);
 var messageSchema = new mongoose.Schema ({
   body: {type: String, required: true},
   date: {type: Date, default: Date.now},
-  tags: [{
-      type: mongoose.Schema.Types.ObjectId,
-      ref: "Tag"
-  }],
   user: {
   	type: mongoose.Schema.Types.ObjectId,
   	ref: "User"
   },
-  locations: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Location"
-  }]
 });
 
 messageSchema.plugin(deepPopulate);

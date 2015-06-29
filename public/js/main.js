@@ -23,7 +23,7 @@ var token, socket, $errMessage;
         });
 
         socket.on('data', function(msg,info){
-          $('#messages').append($('<li>').text(info+ ": " + msg));
+          $('#messages').append($('<li>').html('<strong>'+info+'</strong>' + ": " + msg));
         });
 
         socket.on('alreadyLoggedIn', function(){
@@ -61,6 +61,7 @@ var token, socket, $errMessage;
                 url: '/login'
             }).done(function (result) {
                 if ($errMessage) $errMessage.remove()
+                $('#map-canvas').show();
                 $('#message').show();
                 $('#messages').show();
                 $('#logout').show();

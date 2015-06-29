@@ -4,7 +4,8 @@
 	box-sizing: border-box; 
 }
 body { 
-	font: 14px Helvetica, Arial; 
+	font: 16px Helvetica, Arial; 
+	color: black;
 }
 .container{
 	padding: 0;
@@ -16,12 +17,29 @@ body {
 #messages { 
 	list-style-type: none; 
 	margin: 0; 
-	padding: 0; 
+	padding: 0;
+	border-radius: 4px;
+	background: white; 
 }
 #messages li { 
-	padding: 5px 10px; 
+	padding: 5px 10px;
+	/*border-radius: 2px;*/
+	/*background:#175B5B;*/ 
 }
 #messages li:nth-child(odd) { 
-	background:gray; 
+	/*background:#3D3D3D;*/
+	/*border-radius: 2px; */
+}
+
+#messages li {
+	color: #3D3D3D;
+}
+#messages li:nth-child(odd) {
+	color: #175B5B;
+}
+.message-label {
+	font: 22px Helvetica, Arial; 
+	color: orange;
+	padding: 5px;
 }
 
