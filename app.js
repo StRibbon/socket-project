@@ -9,18 +9,19 @@ var express = require('express'),
     db = require("./models"),
 	  io = require('socket.io')(http),      
     methodOverride = require("method-override"),
-    session = require("cookie-session")({
-      secret: process.env.SESSION_SECRET,
-      name: "chocolate chipz",
-    }),
+    Session = require("express-session"),
+    SessionStore = require('session-file-store')(Session),
     morgan = require("morgan"),
     ioMiddleware = require('./middleware/ioHelper'),
     loginMiddleware = require("./middleware/loginHelper"),
     routeMiddleware = require("./middleware/routeHelper");
 
-var jwt_secret = process.env.JWT_SECRET;
+var session = Session({ secret: process.env.SESSION_SECRET, resave: true, saveUninitialized: true });
+var ios = require('express-socket.io-session');
 
 app.use(session);
+
+io.use(ios(session));
 
 app.set('view engine', 'ejs');
 app.use(methodOverride('_method'));
@@ -65,8 +66,9 @@ app.post("/login", function (req, res) {
       res.status(400).send(err);
       } else if (!err && user !== null){
       req.login(user);
-      var token = jwt.sign(user, jwt_secret, {expiresInMinutes: 60*5});
-      res.json({token: token});
+      res.json(user);
+      // var token = jwt.sign(user, jwt_secret, {expiresInMinutes: 60*5});
+      // res.json({token: token});
     } else {
       res.status(500).send("Something went wrong...");
     }
@@ -79,20 +81,63 @@ app.get("/logout", function (req, res) {
   res.redirect("/");
 });
 
-io.use(socketio_jwt.authorize({
-  secret: jwt_secret,
-  handshake: true
-}));
+// io.use(socketio_jwt.authorize({
+//   secret: jwt_secret,
+//   handshake: true
+// }));
 
-io.use(require("express-socket.io-session")(session));
+// io.use(require("express-socket.io-session")(session));
 
+var logoutTimer;
 // set authorization for socket.io
 io.on('connection', function (socket) {
-  console.log(socket.decoded_token.username, 'connected');
+  // console.log(socket.decoded_token.username, 'connected');
   console.log(socket.handshake.session);
-    socket.on('message', function(message){
-      io.emit("data", message, socket.decoded_token.username);
-    });
+
+  socket.on('isLoggedIn', function(){
+    return socket.handshake.session.uid;
+  });
+
+  socket.on('loggedIn', function(){
+    if(socket.handshake.session.uid){
+      clearTimeout(logoutTimer);
+      socket.emit('alreadyLoggedIn');
+      console.log("loggedIn Emitted!");
+    }
+  });
+
+  socket.on("login", function(result){
+    socket.handshake.session.name = result.username;
+    socket.handshake.session.uid = result._id;
+    socket.handshake.session.save();
+    console.log("This is logged in person: " + socket.handshake.session);
+  });
+
+  socket.on("logout", function(result){
+    if(socket.handshake.session.result){
+      delete socket.handshake.session.name;
+      delete socket.handshake.session.uid;
+      socket.handshake.session.save();
+    }
+  })
+
+  socket.on('message', function(message){
+    io.emit("data", message, socket.handshake.session.name);
+  });
+
+  socket.on('disconnect', function(){
+      // if there is an id
+      if(socket.handshake.session.uid){
+        // only delete after 4 seconds, in case they refresh
+        logoutTimer = setTimeout(function(){
+        delete socket.handshake.session.uid;
+        delete socket.handshake.session.name;
+        socket.handshake.session.save();
+        console.log(socket.handshake.session);
+      }, 4000);
+     }
+  });
+
 });
 
 http.listen(3000, function(){

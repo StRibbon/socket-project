@@ -18,14 +18,15 @@
   
 </form>
 
-<div id="map-canvas" style="display:none"></div>
+<div id="map-canvas" style="display:none;"></div>
 
-<form id="message" action="javascript:void(0)" style="display:none">
+<form class="form-group" id="message" action="javascript:void(0)" style="display:none;">
       <label for="message">Message: </label>
-      <input type="text" name="message" id="text">
-      <input type="submit" value="SEND MESSAGE">
+      <input type="text" name="message" id="text" class="form-control">
+      <input type="submit" value="SEND" style="display:none;">
 </form>
 
-<div id="messages" class="display:none"></div>
+<div id="messages" style="display:none;"></div>
+<div id="logout" style="display:none;"></div>
 
 <% include partials/footer %>

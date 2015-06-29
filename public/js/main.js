@@ -16,21 +16,26 @@ google.maps.event.addDomListener(window, 'load', initialize);
   
 var token, socket, $errMessage;
 
-        function connect () {
-          socket = io.connect(token ? ('?token=' + token) : '', {
-            'forceNew': true
-          });
-          console.log(socket)
-          socket.on('authenticated', function () {
-            console.log('authenticated');
-          }).on('disconnect', function () {
-            console.log('disconnected');
-          }).on('data', function(msg, info){
-             $('#messages').append($('<li>').text(info + ": " +msg));
-          });
-        }
+        socket = io.connect({'forceNew':true});
 
-        connect();
+        socket.on('connect', function(){
+          if(socket.emit('isLoggedIn')) socket.emit('loggedIn');
+        });
+
+        socket.on('data', function(msg,info){
+          $('#messages').append($('<li>').text(info+ ": " + msg));
+        });
+
+        socket.on('alreadyLoggedIn', function(){
+          $('#map-canvas').show();
+          $('#message').show();
+          $('#messages').show();
+          $('#logout').show();
+          $('#login').hide();
+          $('.signup').hide();
+          $('#text').focus()
+        });
+
 
         $('#message').submit(function(e){
           e.preventDefault();
@@ -38,7 +43,12 @@ var token, socket, $errMessage;
           console.log(messageText)
           socket.emit("message", messageText)
           $("#text").val("")
+          $('#text').focus()
         })
+
+        $('#logout').click(function(e){
+          socket.emit('logout');
+        });
 
         $('#login').submit(function (e) {
             e.preventDefault();
@@ -51,14 +61,13 @@ var token, socket, $errMessage;
                 url: '/login'
             }).done(function (result) {
                 if ($errMessage) $errMessage.remove()
-                token = result.token;
-                connect();
-                $('#map-canvas').show();
                 $('#message').show();
                 $('#messages').show();
+                $('#logout').show();
                 $('#login').hide();
                 $('.signup').hide();
-                $('#text').focus()
+                $('#text').focus();
+                socket.emit("login", result);
             }).fail(function(err){
               if ($errMessage) $errMessage.remove()
               $errMessage = $("<h1>").text(err.responseText)
