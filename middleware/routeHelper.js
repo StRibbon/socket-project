@@ -14,7 +14,7 @@ var routeHelpers = {
     db.Message.findById(req.params.id).populate('user').exec(function(err,message){
       console.log(message)
       if (message.user.id != req.session.id) {
-        res.redirect('/home');
+        res.redirect('/');
       }
       else {
        return next();
@@ -24,7 +24,7 @@ var routeHelpers = {
 
   preventLoginSignup: function(req, res, next) {
     if (req.session.id !== null && req.session.id !== undefined) {
-      res.redirect('/home');
+      res.redirect('/');
     }
     else {
      return next();
