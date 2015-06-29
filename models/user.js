@@ -12,18 +12,18 @@ var userSchema = new mongoose.Schema ({
     unique: true
     },
   password: {type: String, required: true},
-  tags: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Tag"
-  }],
-  messages: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Message"
-  }],
-  locations: [{
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Location"
-  }]
+  // tags: [{
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "Tag"
+  // }],
+  // messages: [{
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "Message"
+  // }],
+  // locations: [{
+  //   type: mongoose.Schema.Types.ObjectId,
+  //   ref: "Location"
+  // }]
 });
 
 userSchema.pre('save', function(next) {

@@ -1,5 +1,5 @@
 var mongoose = require("mongoose");
-mongoose.connect("mongodb://localhost/socket-project");
+mongoose.connect(process.env.MONGOLAB_URI || "mongodb://localhost/socket-project");
 
 module.exports.User = require("./user");
 module.exports.Message = require("./message");

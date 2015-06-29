@@ -7,7 +7,6 @@ var deepPopulate = require('mongoose-deep-populate');
 mongoose.set('debug', true);
 
 var locationSchema = new mongoose.Schema ({
-  topic: String,
   lat: Number,
   long: Number,
   messages: [{

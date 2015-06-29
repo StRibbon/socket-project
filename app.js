@@ -36,7 +36,7 @@ app.get('/', routeMiddleware.ensureLoggedIn, function(req,res){
   res.render('layout');
 });
 
-app.get('/signup', routeMiddleware.preventLoginSignup ,function(req,res){
+app.get('/signup', function(req,res){
   res.render('users/signup');
 });
 
@@ -81,6 +81,38 @@ app.get("/logout", function (req, res) {
   res.redirect("/");
 });
 
+app.get('/locations', function(req,res){
+  db.Location.find({}, function(err,locations){
+    res.format({
+          'application/json': function(){
+            res.send({ locations: locations });
+          },
+          'default': function() {
+            // log the request and respond with 406
+            res.status(406).send('Not Acceptable');
+          }
+    });
+  })
+});
+
+app.post('/locations', function(req,res){
+  var location = new db.Location(req.body.location);
+    location.save(function(err,location){
+      if(err){
+        console.log(err);
+      }
+      res.format({
+        'application/json': function(){
+          res.send(location);
+        },
+        'default': function() {
+          // log the request and respond with 406
+          res.status(406).send('Not Acceptable');
+        }
+      });
+    });  
+});
+
 // io.use(socketio_jwt.authorize({
 //   secret: jwt_secret,
 //   handshake: true
@@ -110,7 +142,7 @@ io.on('connection', function (socket) {
     socket.handshake.session.name = result.username;
     socket.handshake.session.uid = result._id;
     socket.handshake.session.save();
-    console.log("This is logged in person: " + socket.handshake.session);
+    console.log("This is logged in person: " + socket.handshake.session.name);
   });
 
   socket.on("logout", function(result){
@@ -121,10 +153,25 @@ io.on('connection', function (socket) {
     }
   })
 
+  // socket.on('message', function(message){
+  //   io.emit("data", message, socket.handshake.session.name);
+  // });
   socket.on('message', function(message){
     io.emit("data", message, socket.handshake.session.name);
+    // db.Message.create(message, function(err, messsages){
+    //   if(err) {
+    //   console.log(err);
+    //   } else {
+    //     db.Location.findById(req.body.location_id, function (err,location){
+    //       location.messages.push(messages);
+    //       console.log(messages);
+    //       messages.user = socket.handshake.session.uid;
+    //       io.emit("data", message, socket.handshake.session.name);
+    //     });
+    //   }
+    // });
   });
-
+ 
   socket.on('disconnect', function(){
       // if there is an id
       if(socket.handshake.session.uid){
@@ -140,7 +187,7 @@ io.on('connection', function (socket) {
 
 });
 
-http.listen(3000, function(){
+http.listen(process.env.PORT || 3000, function(){
   console.log('LISTENING ON: 3000');
 });
 

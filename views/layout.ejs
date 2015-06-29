@@ -21,8 +21,9 @@
 <div id="map-canvas" style="display:none;"></div>
 
 <form class="form-group" id="message" action="javascript:void(0)" style="display:none;" :focus >
-      <label for="message" class="message-label"><strong>Type a Message:</strong></label>
-      <input type="text" name="message" id="text" class="form-control">
+      <label for="message" class="message-label"><strong>Type a Message & Press Enter:</strong></label>
+      <input type="text" name="message[body]" id="text" class="form-control">
+      <input type="hidden" name="message[user]">
       <input type="submit" value="SEND" style="display:none;">
 </form>
 

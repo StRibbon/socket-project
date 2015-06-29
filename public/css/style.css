@@ -5,10 +5,13 @@
 }
 body { 
 	font: 16px Helvetica, Arial; 
-	color: black;
 }
 .container{
-	padding: 0;
+	padding: 0px;
+}
+
+#login {
+	margin-left: 10px;
 }
 #map-canvas {
 	height: 400px;
@@ -35,7 +38,7 @@ body {
 	color: #3D3D3D;
 }
 #messages li:nth-child(odd) {
-	color: #175B5B;
+	color: #E6005C;
 }
 .message-label {
 	font: 22px Helvetica, Arial; 
