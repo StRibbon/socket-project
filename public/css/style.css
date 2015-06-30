@@ -10,7 +10,22 @@ body {
 	padding: 0px;
 }
 
+.section {
+	width: 20%;
+	float:right;
+	background:orange;
+	color: #3D3D3D;
+}
+
+#content {
+	color: black;
+}
+
 #login {
+	margin-left: 10px;
+}
+
+#signup {
 	margin-left: 10px;
 }
 #map-canvas {
@@ -22,7 +37,8 @@ body {
 	margin: 0; 
 	padding: 0;
 	border-radius: 4px;
-	background: white; 
+	background: white;
+	clear: both; 
 }
 #messages li { 
 	padding: 5px 10px;
@@ -38,11 +54,13 @@ body {
 	color: #3D3D3D;
 }
 #messages li:nth-child(odd) {
-	color: #E6005C;
+	color: #0066FF;
 }
 .message-label {
-	font: 22px Helvetica, Arial; 
+	font: 18px Helvetica, Arial;
+	font-style: italic; 
 	color: orange;
 	padding: 5px;
+	clear: both;
 }
 

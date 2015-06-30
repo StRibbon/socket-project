@@ -2,7 +2,7 @@ $(function(){
   var map;
   function initialize() {
     map = new google.maps.Map(document.getElementById('map-canvas'),{
-      zoom: 4,
+      zoom: 14,
       center: {lat: 37.7833186, lng: -122.4096054}
     });
 
@@ -15,9 +15,8 @@ $(function(){
       });
         console.log(data);
     });
-
+    //AJAX call from map listener - adds marker and DB location model
     google.maps.event.addListener(map, 'click', function(event){
-      // addMarker(event.latLng, map, name);
       console.log(event);
       console.log(event.latLng.A);
       console.log(event.latLng.F);
@@ -33,26 +32,37 @@ $(function(){
         .done(function(data) {
           addLocation(data);
       });        
-    });  
-  }//end initialize()
+    });
+    
+  }//END initialize()
 
+  //Pop-UP info window on Map
+    var infowindow = new google.maps.InfoWindow({
+
+      content: '<div style="width: 75px; color: black;">'
+                +'<a href="">You are here.</a>'+
+                '</div>'
+                
+
+    });
+
+  //ADD Location from MAP to DB
   function addLocation(data){
     var location = data;
     var ll = new google.maps.LatLng(location.lat, location.long);
-    addMarker(ll, map, location._id);
-    //initialize();               
+    addMarker(ll, map, location._id);               
   }
-
+  //ADD Markers from DB
   function addMarker(ll, map, id) {
     var marker = new google.maps.Marker({
       position: ll,
       map: map,
       mongoId: id,
     });
-    //delete Marker
-    google.maps.event.addListener(marker, 'click',function(){
-      console.log(marker.mongoId);
-      marker.setMap(null);
+  //DELETE Marker on double-click
+  google.maps.event.addListener(marker, 'dblclick',function(){
+    
+    marker.setMap(null);
       $.ajax({
           type: 'DELETE',
           url: '/locations/'+marker.mongoId,
@@ -62,8 +72,25 @@ $(function(){
           console.log(data+"DELETED");
       });        
     })
+  //LOAD Messages and Join Chat
+  google.maps.event.addListener(marker, 'click',function(){
+    infowindow.open(map,marker);
+    console.log(marker.mongoId);
+    loadMessages();
+  });
+
+  }//END add marker function
+
+  function loadMessages(){
+    $.getJSON('/messages').done(function(data){
+      console.log("Messages Load Test");
+      console.log(data);
+      var messages = data.messages;
+      messages.forEach(function(message){
+        $('#messages').append($('<li>').html('<strong>'+message.user+'</strong>' + ": " + message.body));
+      })
+    });
   }
-  
   //google.maps.event.addDomListener(window, 'load', initialize);
   
   var token, $errMessage;
@@ -71,13 +98,18 @@ $(function(){
   socket = io.connect({'forceNew':true});
 
   socket.on('connect', function(){
-    if(socket.emit('isLoggedIn')) socket.emit('loggedIn');
-    
+    if(socket.emit('isLoggedIn')) socket.emit('loggedIn'); 
+  });
+
+  socket.on('chatname', function(name){
+    $('.section').append($('<li>').html('<strong>'+name+'</strong>'));
   });
 
   socket.on('data', function(msg,info){
     $('#messages').append($('<li>').html('<strong>'+info+'</strong>' + ": " + msg));
   });
+
+
 
   socket.on('alreadyLoggedIn', function(){
     initialize();
@@ -122,8 +154,10 @@ $(function(){
         $('#logout').show();
         $('#login').hide();
         $('.signup').hide();
+        $('.section').show();
         $('#text').focus();
         socket.emit("login", result);
+        
     }).fail(function(err){
       if ($errMessage) $errMessage.remove()
       $errMessage = $("<h1>").text(err.responseText)

@@ -118,6 +118,22 @@ app.delete('/locations/:id', function(req,res){
   });
 });
 
+//load MESSAGES
+app.get('/messages', function(req,res){
+  db.Message.find({}, function(err,messages){
+    res.format({
+          'application/json': function(){
+            res.send({ messages: messages });
+          },
+          'default': function() {
+            // log the request and respond with 406
+            res.status(406).send('Not Acceptable');
+          }
+    });
+  })
+});
+
+//JWT TOKENS
 // io.use(socketio_jwt.authorize({
 //   secret: jwt_secret,
 //   handshake: true
@@ -132,6 +148,7 @@ io.on('connection', function (socket) {
   console.log(socket.handshake.session);
 
   socket.on('isLoggedIn', function(){
+    io.emit("chatname", socket.handshake.session.name); //add to array
     return socket.handshake.session.uid;
   });
 
@@ -163,7 +180,7 @@ io.on('connection', function (socket) {
   // });
   socket.on('message', function(message){
     // io.emit("data", message, socket.handshake.session.name);
-    db.Message.create({body:message}, function(err, messsage){
+    db.Message.create({body:message,user:socket.handshake.session.name}, function(err, messsage){
       if(err) {
       console.log(err);
       } else {

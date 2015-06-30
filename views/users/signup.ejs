@@ -1,6 +1,6 @@
 <% include ../partials/header %>
 
-<form method="POST" action="/signup">
+<form method="POST" action="/signup" id="signup">
   
   <div class="form-group"> 
     <h2>Register</h2>
@@ -11,10 +11,13 @@
       <input type="password" id="pass" name="user[password]" placeholder="Create a password" class="form-control">
     </label>
     <input type="submit" class="btn btn-primary" value="submit">
-  </div>   
-  
+  </div>    
+
+  <div>
+    <a href="/login">Have an account already? Login here</a>  
+  </div>
+
 </form>
-Have an account already? Login <a href="/login">here</a>
 
 <% include ../partials/header %>
 
