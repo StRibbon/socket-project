@@ -4,18 +4,32 @@
 	box-sizing: border-box; 
 }
 body { 
-	font: 16px Helvetica, Arial; 
+	font: 16px; 
 }
 .container{
 	padding: 0px;
 }
 
 .section {
+	width: 15%;
+	float: right;
+	color: #0066FF;
+	padding: 1%;
+	margin-right: 1%;
+	text-align: right;
+	list-style-type: none;
+}
+
+/*.section li {
 	width: 20%;
 	float:right;
-	background:orange;
-	color: #3D3D3D;
-}
+	color: #0066FF;
+	padding: 1%;
+	margin-right: 2%;
+	text-align: right;
+	list-style-type: none;
+}*/
+
 
 #content {
 	color: black;
@@ -30,6 +44,7 @@ body {
 }
 #map-canvas {
 	height: 400px;
+	width: 79%;
 }
 
 #messages { 
@@ -57,10 +72,11 @@ body {
 	color: #0066FF;
 }
 .message-label {
-	font: 18px Helvetica, Arial;
+	font: 18px;
 	font-style: italic; 
 	color: orange;
-	padding: 5px;
-	clear: both;
+	padding: 1%;
+	margin-left: 1%;
+	float: left;
 }
 

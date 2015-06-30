@@ -42,8 +42,6 @@ $(function(){
       content: '<div style="width: 75px; color: black;">'
                 +'<a href="">You are here.</a>'+
                 '</div>'
-                
-
     });
 
   //ADD Location from MAP to DB
@@ -54,6 +52,7 @@ $(function(){
   }
   //ADD Markers from DB
   function addMarker(ll, map, id) {
+    currentLocation = id;
     var marker = new google.maps.Marker({
       position: ll,
       map: map,
@@ -72,25 +71,43 @@ $(function(){
           console.log(data+"DELETED");
       });        
     })
+
   //LOAD Messages and Join Chat
   google.maps.event.addListener(marker, 'click',function(){
     infowindow.open(map,marker);
     console.log(marker.mongoId);
+    currentLocation = marker.mongoId;
     loadMessages();
   });
 
   }//END add marker function
 
+  var currentLocation;
+
   function loadMessages(){
-    $.getJSON('/messages').done(function(data){
-      console.log("Messages Load Test");
+    $.getJSON('/locations/'+currentLocation+'/messages').done(function(data){
       console.log(data);
       var messages = data.messages;
       messages.forEach(function(message){
-        $('#messages').append($('<li>').html('<strong>'+message.user+'</strong>' + ": " + message.body));
+        $('#messages').append($('<li>').html('<strong>'+message.user + ":" + message.date + '</strong>' + ": " + message.body));
       })
     });
   }
+
+  // function deleteMessages(){
+    $("#clear").click(function() {
+    
+      // $.ajax({
+      //     type: 'DELETE',
+      //     url: '/messages',
+      //     dataType: 'json'
+      //   })
+      //   .done(function(data) {
+      //     console.log(data+"DELETED");
+          $('#messages').html("");
+      });        
+    // })
+  // })
   //google.maps.event.addDomListener(window, 'load', initialize);
   
   var token, $errMessage;
@@ -116,10 +133,12 @@ $(function(){
     $('#map-canvas').show();
     $('#message').show();
     $('#messages').show();
+    $('#clear').show();
     $('#logout').show();
     $('#login').hide();
     $('.signup').hide();
     $('#text').focus()
+    $('.section').show();
   });
 
   $('#message').submit(function(e){
@@ -127,7 +146,7 @@ $(function(){
     var messageText = $("#text").val()
     console.log(messageText);
     //insert AJAX to get location ID
-    socket.emit("message", messageText)
+    socket.emit("message", {messageText: messageText, currentLocation: currentLocation});
     $("#text").val("")
     $('#text').focus()
   })
@@ -151,10 +170,10 @@ $(function(){
         $('#map-canvas').show();
         $('#message').show();
         $('#messages').show();
+        $('#clear').show();
         $('#logout').show();
         $('#login').hide();
         $('.signup').hide();
-        $('.section').show();
         $('#text').focus();
         socket.emit("login", result);
         

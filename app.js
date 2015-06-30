@@ -118,12 +118,12 @@ app.delete('/locations/:id', function(req,res){
   });
 });
 
-//load MESSAGES
-app.get('/messages', function(req,res){
-  db.Message.find({}, function(err,messages){
+//load MESSAGES by LOCATION
+app.get('/locations/:id/messages', function(req,res){
+  db.Location.findById(req.params.id).populate('messages').exec(function(err, location){
     res.format({
           'application/json': function(){
-            res.send({ messages: messages });
+            res.send({ messages: location.messages });
           },
           'default': function() {
             // log the request and respond with 406
@@ -131,6 +131,26 @@ app.get('/messages', function(req,res){
           }
     });
   })
+});
+
+// //load MESSAGES
+// app.get('/messages', function(req,res){
+//   db.Message.find({}, function(err,messages){
+//     res.format({
+//           'application/json': function(){
+//             res.send({ messages: messages });
+//           },
+//           'default': function() {
+//             // log the request and respond with 406
+//             res.status(406).send('Not Acceptable');
+//           }
+//     });
+//   })
+// });
+//delete MESSAGES
+app.delete('/messages', function(req,res){
+  db.Message.findAndRemove( function(err, location){
+  });
 });
 
 //JWT TOKENS
@@ -178,18 +198,19 @@ io.on('connection', function (socket) {
   // socket.on('message', function(message){
   //   io.emit("data", message, socket.handshake.session.name);
   // });
-  socket.on('message', function(message){
+  socket.on('message', function(data){
     // io.emit("data", message, socket.handshake.session.name);
-    db.Message.create({body:message,user:socket.handshake.session.name}, function(err, messsage){
+    db.Message.create({body:data.messageText,user:socket.handshake.session.name}, function(err, message){
       if(err) {
       console.log(err);
       } else {
-        // db.Location.findById(, function (err,location){
-          // location.messages.push(message);
-          // console.log(location.messages);
-          // message.user = socket.handshake.session.uid;
-          io.emit("data", message, socket.handshake.session.name);
-        // });
+        db.Location.findById(data.currentLocation, function (err,location){
+          location.messages.push(message);
+          location.save(function(err){
+            io.emit("data", data.messageText, socket.handshake.session.name);
+          });
+          
+        });
       }
     });
   });
