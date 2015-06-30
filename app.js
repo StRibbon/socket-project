@@ -80,7 +80,7 @@ app.get("/logout", function (req, res) {
   req.logout();
   res.redirect("/");
 });
-
+//load Locations
 app.get('/locations', function(req,res){
   db.Location.find({}, function(err,locations){
     res.format({
@@ -94,7 +94,7 @@ app.get('/locations', function(req,res){
     });
   })
 });
-
+//create Locations
 app.post('/locations', function(req,res){
   var location = new db.Location(req.body.location);
     location.save(function(err,location){
@@ -111,6 +111,11 @@ app.post('/locations', function(req,res){
         }
       });
     });  
+});
+//delete Locations
+app.delete('/locations/:id', function(req,res){
+  db.Location.findByIdAndRemove(req.params.id, function(err, location){
+  });
 });
 
 // io.use(socketio_jwt.authorize({
@@ -157,19 +162,19 @@ io.on('connection', function (socket) {
   //   io.emit("data", message, socket.handshake.session.name);
   // });
   socket.on('message', function(message){
-    io.emit("data", message, socket.handshake.session.name);
-    // db.Message.create(message, function(err, messsages){
-    //   if(err) {
-    //   console.log(err);
-    //   } else {
-    //     db.Location.findById(req.body.location_id, function (err,location){
-    //       location.messages.push(messages);
-    //       console.log(messages);
-    //       messages.user = socket.handshake.session.uid;
-    //       io.emit("data", message, socket.handshake.session.name);
-    //     });
-    //   }
-    // });
+    // io.emit("data", message, socket.handshake.session.name);
+    db.Message.create({body:message}, function(err, messsage){
+      if(err) {
+      console.log(err);
+      } else {
+        // db.Location.findById(, function (err,location){
+          // location.messages.push(message);
+          // console.log(location.messages);
+          // message.user = socket.handshake.session.uid;
+          io.emit("data", message, socket.handshake.session.name);
+        // });
+      }
+    });
   });
  
   socket.on('disconnect', function(){

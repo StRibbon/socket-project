@@ -11,7 +11,7 @@ $(function(){
     $.getJSON("/locations").done(function(data){
       data.locations.forEach(function(location){         
         var ll = new google.maps.LatLng(location.lat, location.long);
-        addMarker(ll, map);
+        addMarker(ll, map, location._id);
       });
         console.log(data);
     });
@@ -39,17 +39,32 @@ $(function(){
   function addLocation(data){
     var location = data;
     var ll = new google.maps.LatLng(location.lat, location.long);
-    addMarker(ll, map);               
+    addMarker(ll, map, location._id);
+    //initialize();               
   }
 
-  function addMarker(ll, map) {
+  function addMarker(ll, map, id) {
     var marker = new google.maps.Marker({
       position: ll,
       map: map,
+      mongoId: id,
     });
+    //delete Marker
+    google.maps.event.addListener(marker, 'click',function(){
+      console.log(marker.mongoId);
+      marker.setMap(null);
+      $.ajax({
+          type: 'DELETE',
+          url: '/locations/'+marker.mongoId,
+          dataType: 'json'
+        })
+        .done(function(data) {
+          console.log(data+"DELETED");
+      });        
+    })
   }
   
-  // google.maps.event.addDomListener(window, 'load', initialize);
+  //google.maps.event.addDomListener(window, 'load', initialize);
   
   var token, $errMessage;
 
@@ -65,7 +80,7 @@ $(function(){
   });
 
   socket.on('alreadyLoggedIn', function(){
-    
+    initialize();
     $('#map-canvas').show();
     $('#message').show();
     $('#messages').show();
@@ -78,11 +93,11 @@ $(function(){
   $('#message').submit(function(e){
     e.preventDefault();
     var messageText = $("#text").val()
-    console.log(messageText)
+    console.log(messageText);
+    //insert AJAX to get location ID
     socket.emit("message", messageText)
     $("#text").val("")
     $('#text').focus()
-    initialize();
   })
 
   $('#logout').click(function(e){
