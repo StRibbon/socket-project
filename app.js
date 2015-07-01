@@ -133,43 +133,19 @@ app.get('/locations/:id/messages', function(req,res){
   })
 });
 
-// //load MESSAGES
-// app.get('/messages', function(req,res){
-//   db.Message.find({}, function(err,messages){
-//     res.format({
-//           'application/json': function(){
-//             res.send({ messages: messages });
-//           },
-//           'default': function() {
-//             // log the request and respond with 406
-//             res.status(406).send('Not Acceptable');
-//           }
-//     });
-//   })
-// });
 //delete MESSAGES
 app.delete('/messages', function(req,res){
   db.Message.findAndRemove( function(err, location){
   });
 });
 
-//JWT TOKENS
-// io.use(socketio_jwt.authorize({
-//   secret: jwt_secret,
-//   handshake: true
-// }));
-
-// io.use(require("express-socket.io-session")(session));
-
 var logoutTimer;
 
-io.on('connection', function (socket) {
-  
-  console.log(socket.handshake.session);
- 
+io.on('connection', function (socket){
 
-  socket.on('isLoggedIn', function(){
-    
+  console.log(socket.handshake.session);
+
+  socket.on('isLoggedIn', function(){  
     return socket.handshake.session.uid;
   });
 
@@ -197,11 +173,7 @@ io.on('connection', function (socket) {
     }
   })
 
-  // socket.on('message', function(message){
-  //   io.emit("data", message, socket.handshake.session.name);
-  // });
   socket.on('message', function(data){
-    // io.emit("data", message, socket.handshake.session.name);
     db.Message.create({body:data.messageText,user:socket.handshake.session.name}, function(err, message){
       if(err) {
       console.log(err);
@@ -210,6 +182,7 @@ io.on('connection', function (socket) {
           location.messages.push(message);
           location.save(function(err){
             io.emit("data", data.messageText, socket.handshake.session.name);
+            // io.emit("data", message, socket.handshake.session.name);
           });          
         });
       }
@@ -229,26 +202,8 @@ io.on('connection', function (socket) {
      }
   });
 
-});
+});//end IO on connection 
 
 http.listen(process.env.PORT || 3000, function(){
   console.log('LISTENING ON: 3000');
 });
-
-//POPULATE MESSAGES
-// app.get('/home', function(req,res) {
-//   db.Message.find({}).populate('user','username').exec(function(err, messages) {
-//     if (err) {
-//       console.log(err);
-//     } else {
-//       if(req.session.id == null){
-//         res.render('layout', {messages: messages, currentuser: "*FALSE USER*"});
-//       } else {
-//         db.User.findById(req.session.id, function(err,user){
-//           console.log(user)
-//           res.render('layout', {messages: messages, currentuser: username.username}); // prev user.username
-//         })
-//       }
-//     }
-//   });
-// });
