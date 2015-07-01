@@ -39,9 +39,11 @@ $(function(){
   //Pop-UP info window on Map
     var infowindow = new google.maps.InfoWindow({
 
-      content: '<div style="width: 75px; color: black;">'
-                +'<a href="">You are here.</a>'+
-                '</div>'
+      content: '<div id="markerBox" style="color: black;">'
+                
+                +'<div class="glyphicon glyphicon-ok-circle">Join</div><br>'
+                +'<div class="glyphicon glyphicon-remove-circle">Delete</div>'
+                +'</div>'
     });
 
   //ADD Location from MAP to DB
@@ -77,6 +79,7 @@ $(function(){
     infowindow.open(map,marker);
     console.log(marker.mongoId);
     currentLocation = marker.mongoId;
+    $('#messages').html("");
     loadMessages();
   });
 
@@ -93,22 +96,6 @@ $(function(){
       })
     });
   }
-
-  // function deleteMessages(){
-    $("#clear").click(function() {
-    
-      // $.ajax({
-      //     type: 'DELETE',
-      //     url: '/messages',
-      //     dataType: 'json'
-      //   })
-      //   .done(function(data) {
-      //     console.log(data+"DELETED");
-          $('#messages').html("");
-      });        
-    // })
-  // })
-  //google.maps.event.addDomListener(window, 'load', initialize);
   
   var token, $errMessage;
 
@@ -126,10 +113,9 @@ $(function(){
     $('#messages').append($('<li>').html('<strong>'+info+'</strong>' + ": " + msg));
   });
 
-
-
   socket.on('alreadyLoggedIn', function(){
     initialize();
+    $('.section').show();
     $('#map-canvas').show();
     $('#message').show();
     $('#messages').show();
@@ -138,7 +124,7 @@ $(function(){
     $('#login').hide();
     $('.signup').hide();
     $('#text').focus()
-    $('.section').show();
+    
   });
 
   $('#message').submit(function(e){
@@ -168,6 +154,8 @@ $(function(){
         if ($errMessage) $errMessage.remove();
         initialize();
         $('#map-canvas').show();
+        $('.section').show();
+        $('#alert').show();
         $('#message').show();
         $('#messages').show();
         $('#clear').show();

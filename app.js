@@ -122,13 +122,13 @@ app.delete('/locations/:id', function(req,res){
 app.get('/locations/:id/messages', function(req,res){
   db.Location.findById(req.params.id).populate('messages').exec(function(err, location){
     res.format({
-          'application/json': function(){
-            res.send({ messages: location.messages });
-          },
-          'default': function() {
-            // log the request and respond with 406
-            res.status(406).send('Not Acceptable');
-          }
+      'application/json': function(){
+        res.send({ messages: location.messages });
+      },
+      'default': function() {
+        // log the request and respond with 406
+        res.status(406).send('Not Acceptable');
+      }
     });
   })
 });
@@ -162,13 +162,14 @@ app.delete('/messages', function(req,res){
 // io.use(require("express-socket.io-session")(session));
 
 var logoutTimer;
-// set authorization for socket.io
+
 io.on('connection', function (socket) {
-  // console.log(socket.decoded_token.username, 'connected');
+  
   console.log(socket.handshake.session);
+ 
 
   socket.on('isLoggedIn', function(){
-    io.emit("chatname", socket.handshake.session.name); //add to array
+    
     return socket.handshake.session.uid;
   });
 
@@ -176,7 +177,7 @@ io.on('connection', function (socket) {
     if(socket.handshake.session.uid){
       clearTimeout(logoutTimer);
       socket.emit('alreadyLoggedIn');
-      console.log("loggedIn Emitted!");
+      console.log("loggedIn Emitted!");   
     }
   });
 
@@ -185,6 +186,7 @@ io.on('connection', function (socket) {
     socket.handshake.session.uid = result._id;
     socket.handshake.session.save();
     console.log("This is logged in person: " + socket.handshake.session.name);
+    io.emit("chatname", socket.handshake.session.name); 
   });
 
   socket.on("logout", function(result){
@@ -208,8 +210,7 @@ io.on('connection', function (socket) {
           location.messages.push(message);
           location.save(function(err){
             io.emit("data", data.messageText, socket.handshake.session.name);
-          });
-          
+          });          
         });
       }
     });

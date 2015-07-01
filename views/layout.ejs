@@ -17,9 +17,24 @@
   </div>
   
 </form>
-<ul class="section" style="display:none;">Current users:</ul>
-<div id="map-canvas" style="display:none;"></div>
+<div class="section" style="display:none;">
 
+<div id="logout"><a class="btn btn-danger" href="/logout">Log-out</a></div>
+
+  <div class="btn-toolbar">
+    <div class="btn-group">
+      <a href="#" class="btn btn-default">1</a>
+      <a href="#" class="btn btn-default">2</a>
+      <a href="#" class="btn btn-default">3</a>
+      <a href="#" class="btn btn-default">4</a>
+    </div>
+  </div>
+
+  <ul class="userList">Current users:</ul>
+
+</div> <!-- END section --> 
+
+<div id="map-canvas" style="display:none;"></div>
 
 
 <form class="form-group" id="message" action="javascript:void(0)" style="display:none;" :focus >
@@ -29,8 +44,7 @@
       <input type="submit" value="SEND" style="display:none;">
 </form>
 
-<button class="btn btn-warning" id="clear" style="display:none" value="clear messages">clear</button>
 <div id="messages" style="display:none;"></div>
-<div id="logout" style="display:none;"></div>
+
 
 <% include partials/footer %>
