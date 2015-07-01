@@ -15,7 +15,8 @@ $(function(){
       });
         console.log(data);
     });
-    //AJAX call from map listener - adds marker and DB location model
+
+  //AJAX call from map listener - adds marker and DB location model
     google.maps.event.addListener(map, 'click', function(event){
       console.log(event);
       console.log(event.latLng.A);
@@ -31,10 +32,10 @@ $(function(){
         })
         .done(function(data) {
           addLocation(data);
-      });        
+        });        
     });
-    
-  }//END initialize()
+
+}//END initialize()
 
   //Pop-UP info window on Map
     var infowindow = new google.maps.InfoWindow({
@@ -53,47 +54,50 @@ $(function(){
     addMarker(ll, map, location._id);               
   }
   //ADD Markers from DB
-  function addMarker(ll, map, id) {
+  function addMarker(ll, map, id){
     currentLocation = id;
     var marker = new google.maps.Marker({
       position: ll,
       map: map,
-      mongoId: id,
+      mongoId: id
     });
+  // //JOIN Body Event Delegation 
+  // $('#join').on('click', function(){
 
-  //Marker WINDOW + JOIN + DELETE
+
+  //LOAD Messages and Join Chat
   google.maps.event.addListener(marker, 'click',function(){
-    infowindow.open(map,marker);
+    // infowindow.open(map,marker);
+    console.log(marker.mongoId);
     currentLocation = marker.mongoId;
-    $('#join').click(function(e){
-      $('#messages').html("");
-      console.log(marker.mongoId);  
-      loadMessages();
-    });
-    //DELETE Marker + Messages
-    $('#delete').click(function(e){
-      $('#messages').html("");
-      marker.setMap(null);
-        $.ajax({
-            type: 'DELETE',
-            url: '/locations/'+marker.mongoId,
-            dataType: 'json'
-          })
-          .done(function(data) {
-            console.log(data+"DELETED");
-        });    
-    });       
-  });
+    $('#messages').html("");
+    loadMessages();
+    
+  }); 
+  //Marker WINDOW + JOIN + DELETE
+  google.maps.event.addListener(marker, 'dblclick',function(){
+    // infowindow.open(map,marker);
+    $('#messages').html("");
+    marker.setMap(null);
+      $.ajax({
+          type: 'DELETE',
+          url: '/locations/'+marker.mongoId,
+          dataType: 'json'
+        })
+        .done(function(data) {
+          console.log(data+"DELETED");
+        });         
+  });         
 }//end ADD Marker function
 
-  var currentLocation;
+var currentLocation;
 
   function loadMessages(){
     $.getJSON('/locations/'+currentLocation+'/messages').done(function(data){
       console.log(data);
       var messages = data.messages;
       messages.forEach(function(message){
-        $('#messages').append($('<li>').html('<strong>'+message.user + "@" + message.date.substring(11,16) + '</strong>' + ": " + message.body));
+        $('#messages').append( $('<li>').html('<strong>'+message.user + "@" + message.date.substring(11,16) + '</strong>' + ": " + message.body) );
       })
     });
   }
