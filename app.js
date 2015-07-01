@@ -153,7 +153,8 @@ io.on('connection', function (socket){
     if(socket.handshake.session.uid){
       clearTimeout(logoutTimer);
       socket.emit('alreadyLoggedIn');
-      console.log("loggedIn Emitted!");   
+      console.log("loggedIn Emitted!");
+      io.emit("chatname", socket.handshake.session.name);   
     }
   });
 

@@ -18,7 +18,7 @@ body {
 }
 
 .section {
-	width: 17%;
+	width: 18%;
 	float: right;
 	padding:0;
 	margin-right:0;
@@ -26,9 +26,19 @@ body {
 	list-style-type: none;
 }
 
-.userList {
+#userList {
 	margin-left:2px;
 	margin-top:10px;
+
+}
+
+#userList li{
+	list-style-type: none;
+	color: #00a379;
+}
+
+#userList li:nth-child(odd) {
+	color: #cccccc;
 }
 
 /*.section li {
@@ -42,12 +52,17 @@ body {
 }*/
 
 
+
 #content {
 	color: black;
 }
 
 #login {
 	margin-left: 10px;
+}
+
+#logout {
+	margin-top: 15px;
 }
 
 #signup {
@@ -80,7 +95,7 @@ body {
 	color: #3D3D3D;
 }
 #messages li:nth-child(odd) {
-	color: #0066FF;
+	color: #258cd1;
 }
 .message-label {
 	font: 18px;

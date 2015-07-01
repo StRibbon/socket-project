@@ -41,8 +41,8 @@ $(function(){
 
       content: '<div id="markerBox" style="color: black;">'
                 
-                +'<div class="glyphicon glyphicon-ok-circle">Join</div><br>'
-                +'<div class="glyphicon glyphicon-remove-circle">Delete</div>'
+                +'<div class="btn btn-info btn-xs" id="join" value="glyphicon glyphicon-ok-circle">Join</div>'
+                +'<div class="btn btn-danger btn-xs" id="delete" value="glyphicon glyphicon-remove-circle">Delete</div>'
                 +'</div>'
     });
 
@@ -60,30 +60,31 @@ $(function(){
       map: map,
       mongoId: id,
     });
-  //DELETE Marker on double-click
-  google.maps.event.addListener(marker, 'dblclick',function(){
-    
-    marker.setMap(null);
-      $.ajax({
-          type: 'DELETE',
-          url: '/locations/'+marker.mongoId,
-          dataType: 'json'
-        })
-        .done(function(data) {
-          console.log(data+"DELETED");
-      });        
-    })
 
-  //LOAD Messages and Join Chat
+  //Marker WINDOW + JOIN + DELETE
   google.maps.event.addListener(marker, 'click',function(){
     infowindow.open(map,marker);
-    console.log(marker.mongoId);
     currentLocation = marker.mongoId;
-    $('#messages').html("");
-    loadMessages();
+    $('#join').click(function(e){
+      $('#messages').html("");
+      console.log(marker.mongoId);  
+      loadMessages();
+    });
+    //DELETE Marker + Messages
+    $('#delete').click(function(e){
+      $('#messages').html("");
+      marker.setMap(null);
+        $.ajax({
+            type: 'DELETE',
+            url: '/locations/'+marker.mongoId,
+            dataType: 'json'
+          })
+          .done(function(data) {
+            console.log(data+"DELETED");
+        });    
+    });       
   });
-
-  }//END add marker function
+}//end ADD Marker function
 
   var currentLocation;
 
@@ -92,12 +93,44 @@ $(function(){
       console.log(data);
       var messages = data.messages;
       messages.forEach(function(message){
-        $('#messages').append($('<li>').html('<strong>'+message.user + ":" + message.date + '</strong>' + ": " + message.body));
+        $('#messages').append($('<li>').html('<strong>'+message.user + "@" + message.date.substring(11,16) + '</strong>' + ": " + message.body));
       })
     });
   }
+
+  var currentUsersArray = [];
+  var usersOnlineInterval;
+
+  // function currentUsers() {
+  //   usersOnlineInterval = setInterval(filterUsersOnline, 5000);
+  // }
+
+  function filterUsersOnline(arr){
+
+    for(var i in arr){
+      $('#userList').append($('<li>').html(arr[i]));
+    }
+     
+  }
+
+  function addCurrentUser(name, arr){
+    if(name !== null && name !== ""){    
+      arr.push(name);  
+        
+      filterUsersOnline(arr);
+      deleteCurrentUser(name, arr);
+    }       
+  }
   
-  var token, $errMessage;
+  function deleteCurrentUser(name, arr){
+    for(var i in arr){
+      if( name == arr[i]){      
+          arr.splice(i,1);
+      }
+    }
+  }
+
+  var $errMessage;
 
   socket = io.connect({'forceNew':true});
 
@@ -106,7 +139,7 @@ $(function(){
   });
 
   socket.on('chatname', function(name){
-    $('.section').append($('<li>').html('<strong>'+name+'</strong>'));
+    addCurrentUser(name,currentUsersArray);
   });
 
   socket.on('data', function(msg,info){
@@ -135,7 +168,7 @@ $(function(){
     socket.emit("message", {messageText: messageText, currentLocation: currentLocation});
     $("#text").val("")
     $('#text').focus()
-  })
+  });
 
   $('#logout').click(function(e){
     socket.emit('logout');
