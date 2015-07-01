@@ -120,6 +120,7 @@ app.delete('/locations/:id', function(req,res){
 
 //load MESSAGES by LOCATION
 app.get('/locations/:id/messages', function(req,res){
+  currentLocation = req.params.id;
   db.Location.findById(req.params.id).populate('messages').exec(function(err, location){
     res.format({
       'application/json': function(){
@@ -139,11 +140,19 @@ app.delete('/messages', function(req,res){
   });
 });
 
-var logoutTimer;
+var logoutTimer, currentLocation, nsp;
+
+
+// var nsp = io.of('/'+currentLocation);
+
 
 io.on('connection', function (socket){
 
   console.log(socket.handshake.session);
+
+  socket.on('join', function(location){
+    console.log("JOIN DATA:" + data.currentLocation);
+  })
 
   socket.on('isLoggedIn', function(){  
     return socket.handshake.session.uid;
@@ -162,7 +171,7 @@ io.on('connection', function (socket){
     socket.handshake.session.uid = result._id;
     socket.handshake.session.save();
     console.log("This is logged in person: " + socket.handshake.session.name);
-    io.emit("chatname", socket.handshake.session.name); 
+    nsp.emit("chatname", socket.handshake.session.name); 
   });
 
   socket.on("logout", function(result){
@@ -188,11 +197,10 @@ io.on('connection', function (socket){
       }
     });
   });
- 
+  
   socket.on('disconnect', function(){
-      // if there is an id
       if(socket.handshake.session.uid){
-        // only delete after 4 seconds, in case they refresh
+        // delete after 4 seconds unless refresh
         logoutTimer = setTimeout(function(){
         delete socket.handshake.session.uid;
         delete socket.handshake.session.name;

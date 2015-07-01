@@ -79,14 +79,23 @@ $(function(){
     infowindow.open(map,marker);
     console.log(marker.mongoId);
     currentLocation = marker.mongoId;
+    socket.emit("join", {currentLocation: currentLocation});
     $('#messages').html("");
     loadMessages();
   });
 
   }//END add marker function
-
-  var currentLocation;
-
+//begin demo
+  // $('#message').submit(function(e){
+  //   e.preventDefault();
+  //   var messageText = $("#text").val()
+  //   console.log(messageText);
+  //   //insert AJAX to get location ID
+  //   socket.emit("message", {messageText: messageText, currentLocation: currentLocation});
+  //   $("#text").val("")
+  //   $('#text').focus()
+  // })
+//end demo
   function loadMessages(){
     $.getJSON('/locations/'+currentLocation+'/messages').done(function(data){
       console.log(data);
@@ -97,11 +106,19 @@ $(function(){
     });
   }
   
-  var token, $errMessage;
+  var $errMessage, currentLocation;
 
-  socket = io.connect({'forceNew':true});
+
+
+
+  // function enterNSP(nsp){
+  //   var socket = io.connect('/'+nsp);
+  // }
+
+  var socket = io.connect('/'+currentLocation);
 
   socket.on('connect', function(){
+    console.log("Here is my NameSpaceId: " + currentLocation);
     if(socket.emit('isLoggedIn')) socket.emit('loggedIn'); 
   });
 
@@ -123,8 +140,7 @@ $(function(){
     $('#logout').show();
     $('#login').hide();
     $('.signup').hide();
-    $('#text').focus()
-    
+    $('#text').focus()    
   });
 
   $('#message').submit(function(e){
