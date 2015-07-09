@@ -19,9 +19,9 @@ body {
 
 .section {
 	width: 18%;
-	float: right;
+	float: left;
 	padding:0;
-	margin-right:0;
+	margin-left:4%;
 	text-align: left;
 	list-style-type: none;
 }
@@ -70,7 +70,11 @@ body {
 }
 #map-canvas {
 	height: 400px;
-	width: 79%;
+	width: 100%;
+}
+
+#message{
+	float:left;
 }
 
 #messages { 
@@ -79,7 +83,8 @@ body {
 	padding: 0;
 	border-radius: 4px;
 	background: white;
-	clear: both; 
+	float:left;
+	width: 80%; 
 }
 #messages li { 
 	padding: 5px 10px;

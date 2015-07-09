@@ -1,6 +1,6 @@
 <% include partials/headerlayout %>
 
-<form id="login" method="POST" action="javascript:void(0)">
+<form id="login" method="POST" action="javascript:void(0)" :focus>
   <div class="form-group"> 
     <h2>Log-in</h2>
     <label for="username">Username:</label>
@@ -14,28 +14,10 @@
   
   <div>
     <a href="/signup">Don't have an account? Register here</a>
-  </div>
-  
+  </div>  
 </form>
-<div class="section" style="display:none;">
-
-<div id="logout"><a class="btn btn-warning btn-sm" href="/logout">Log-out</a></div>
-
-  <!-- <div class="btn-toolbar">
-    <div class="btn-group">
-      <a href="#" class="btn btn-default">1</a>
-      <a href="#" class="btn btn-default">2</a>
-      <a href="#" class="btn btn-default">3</a>
-      <a href="#" class="btn btn-default">4</a>
-    </div>
-  </div> -->
-
-  <ul id="userList" class="text-info"><h5>Users online:</h5></ul>
-
-</div> <!-- END section --> 
 
 <div id="map-canvas" style="display:none;"></div>
-
 
 <form class="form-group" id="message" action="javascript:void(0)" style="display:none;" :focus >
       <label for="message" class="message-label">Type a Message & Press Enter:</label>
@@ -43,6 +25,13 @@
       <input type="hidden" name="message[user]">
       <input type="submit" value="SEND" style="display:none;">
 </form>
+
+<div class="section" style="display:none;">
+
+<div id="logout"><a class="btn btn-warning btn-sm" href="/logout">Log-out</a></div>
+<ul id="userList" class="text-info"><h5>Users online:</h5></ul>
+</div> <!-- END section --> 
+
 
 <div id="messages" style="display:none;"></div>
 
